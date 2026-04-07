@@ -22,4 +22,10 @@ switch($message){
         sendMessage($chatId,$response);
         break;
 }
+
+function sendMessage($chatId, $message){
+    global $website;
+    $url = $website.'/sendMessage?chat_id='.$chatId.'&text='.urlencode($message);
+    file_get_contents($url);
+}
 ?>
