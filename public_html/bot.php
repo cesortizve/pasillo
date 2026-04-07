@@ -1,5 +1,5 @@
 <?php
-$token='8657098940:AAHkX5rVxWp_IMWt84qa-kUYsBZCI-qPBjI';
+$token='8642484008:AAHzS9-zd7yLf-la8jx8BUOQYteLA1TVehU';
 $website = 'https://api.telegram.org/bot'.$token;
 
 $input = file_get_contents('php://input');
@@ -21,5 +21,11 @@ switch($message){
         $response='no te entiendo!!!';
         sendMessage($chatId,$response);
         break;
+}
+
+function sendMessage($chatId, $message){
+    global $website;
+    $url = $website.'/sendMessage?chat_id='.$chatId.'&text='.urlencode($message);
+    file_get_contents($url);
 }
 ?>
