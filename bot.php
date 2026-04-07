@@ -1,25 +1,38 @@
 <?php
-$token='8657098940:AAHkX5rVxWp_IMWt84qa-kUYsBZCI-qPBjI';
-$website = 'https://api.telegram.org/bot'.$token;
-
-$input = file_get_contents('php://input');
-$update = json_decode($input,TRUE);
-
+$token = getenv('BOT_TOKEN');
+$website = 'https://api.telegram.org/bot' . $token;
+$input = file_get_contents('php://stdin');
+$update = json_decode($input, TRUE);
+if (!isset($update['message'])) {
+    exit(0);
+}
 $chatId = $update['message']['chat']['id'];
-$message = $update['message']['text'];
-
-switch($message){
+$message = isset($update['message']['text']) ? $update['message']['text'] : '';
+switch ($message) {
     case '/start':
-        $response='iniciando!!!';
-        sendMessage($chatId,$response);
+        $response = 'iniciando!!!';
+        sendMessage($chatId, $response);
         break;
     case 'quien es la poti':
-        $response='La guaga mas linda!!!';
-        sendMessage($chatId,$response);
+        $response = 'La guaga mas linda!!!';
+        sendMessage($chatId, $response);
         break;
     default:
-        $response='no te entiendo!!!';
-        sendMessage($chatId,$response);
+        $response = 'no te entiendo!!!';
+        sendMessage($chatId, $response);
         break;
 }
-?>
+function sendMessage($chatId, $text) {
+    global $website;
+    $url = $website . '/sendMessage';
+    $data = ['chat_id' => $chatId, 'text' => $text];
+    $options = [
+        'http' => [
+            'method'  => 'POST',
+            'header'  => 'Content-Type: application/json',
+            'content' => json_encode($data),
+        ],
+    ];
+    $context = stream_context_create($options);
+    file_get_contents($url, false, $context);
+}
